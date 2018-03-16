@@ -231,7 +231,7 @@ exports.doJSBundle = function(bundle, applyImports) {
         }
 
         // if .babelrc was found, an empty config object must be passed in order for .babelrc config to be read automatically
-        bundler.plugin(tsify, { target: 'es6', project: "ts.json"}).transform(babelify, babelConfig);
+        bundler.plugin(tsify, { target: 'es6' }).transform(babelify, babelConfig);
     }
 
     if (bundle.bundleTransforms) {
