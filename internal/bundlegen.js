@@ -187,7 +187,7 @@ exports.doJSBundle = function(bundle, applyImports) {
 
     var browserifyConfig = {
         entries: [fileToBundle],
-        extensions: ['.js', '.es6', '.jsx', '.hbs'],
+        extensions: ['.js', '.es6', '.jsx', '.hbs', '.ts', '.tsx'],
         cache: {},
         packageCache: {},
         fullPaths: true
@@ -204,6 +204,7 @@ exports.doJSBundle = function(bundle, applyImports) {
 
     if (langConfig.ecmaVersion === 6 || hasJSX || hasES6 || hasBabelRc) {
         var babelify = require('babelify');
+        var tsify = require('tsify');
         var presets = [];
         var plugins = [];
 
@@ -222,6 +223,7 @@ exports.doJSBundle = function(bundle, applyImports) {
 
         var babelConfig = {};
 
+
         // if no .babelrc was found, configure babel with the default presets and plugins from above
         if (!hasBabelRc) {
             babelConfig.presets = presets;
@@ -229,7 +231,7 @@ exports.doJSBundle = function(bundle, applyImports) {
         }
 
         // if .babelrc was found, an empty config object must be passed in order for .babelrc config to be read automatically
-        bundler.transform(babelify, babelConfig);
+        bundler.plugin(tsify, { target: 'es6', project: "ts.json"}).transform(babelify, babelConfig);
     }
 
     if (bundle.bundleTransforms) {
