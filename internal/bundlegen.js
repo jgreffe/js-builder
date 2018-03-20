@@ -192,10 +192,17 @@ exports.doJSBundle = function(bundle, applyImports) {
         packageCache: {},
         fullPaths: true
     };
+
+    if(packageJson.browserify) {
+        browserifyConfig = Object.assign({}, browserifyConfig, packageJson.browserify);
+    }
     
     if (bundle.minifyBundle === true) {
         browserifyConfig.debug = true;
     }
+
+    logger.logInfo('using browserify config = \n' + JSON.stringify(browserifyConfig, null, '  '));
+
     var bundler = browserify(browserifyConfig);
 
     var hasJSX = paths.hasSourceFiles('jsx');
@@ -204,6 +211,7 @@ exports.doJSBundle = function(bundle, applyImports) {
 
     if (langConfig.ecmaVersion === 6 || hasJSX || hasES6 || hasBabelRc) {
         var babelify = require('babelify');
+        
         var presets = [];
         var plugins = [];
 
@@ -222,6 +230,7 @@ exports.doJSBundle = function(bundle, applyImports) {
 
         var babelConfig = {};
 
+
         // if no .babelrc was found, configure babel with the default presets and plugins from above
         if (!hasBabelRc) {
             babelConfig.presets = presets;
@@ -229,7 +238,12 @@ exports.doJSBundle = function(bundle, applyImports) {
         }
 
         // if .babelrc was found, an empty config object must be passed in order for .babelrc config to be read automatically
-        bundler.transform(babelify, babelConfig);
+        if (packageJson.babelify) {
+            logger.logInfo('using babelify config = \n' + JSON.stringify(packageJson.babelify, null, '  '));
+            bundler.transform(babelify.configure(packageJson.babelify), babelConfig);
+        } else {
+            bundler.transform(babelify, babelConfig);
+        }
     }
 
     if (bundle.bundleTransforms) {
@@ -261,7 +275,11 @@ exports.doJSBundle = function(bundle, applyImports) {
         .on('error', function (err) {
             logger.logError('Browserify bundle processing error');
             if (err) {
-                logger.logError('\terror: ' + err.stack);
+                if(err.stack) {
+                    logger.logError('\terror: ' + err.stack);
+                } else {
+                    logger.logError('\terror: ' + err);
+                }
             }
             if (main.isRebundle() || main.isRetest()) {
                 notifier.notify('bundle:watch failure', 'See console for details.');
