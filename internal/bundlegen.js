@@ -237,13 +237,13 @@ exports.doJSBundle = function(bundle, applyImports) {
             babelConfig.plugins = plugins;
         }
 
-        var babelifyConfig = packageJson.babelify || {};
-        
-        if(packageJson.babelify) {
-            logger.logInfo('using babelify config = \n' + JSON.stringify(babelifyConfig, null, '  '));
-        }
         // if .babelrc was found, an empty config object must be passed in order for .babelrc config to be read automatically
-        bundler.transform(babelify.configure(babelifyConfig), babelConfig);
+        if (packageJson.babelify) {
+            logger.logInfo('using babelify config = \n' + JSON.stringify(packageJson.babelify, null, '  '));
+            bundler.transform(babelify.configure(packageJson.babelify), babelConfig);
+        } else {
+            bundler.transform(babelify, babelConfig);
+        }
     }
 
     if (bundle.bundleTransforms) {
