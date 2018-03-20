@@ -239,7 +239,7 @@ exports.doJSBundle = function(bundle, applyImports) {
 
         var babelifyConfig = packageJson.babelify || {};
         
-        if(babelifyConfig !== {}) {
+        if(packageJson.babelify) {
             logger.logInfo('using babelify config = \n' + JSON.stringify(babelifyConfig, null, '  '));
         }
         // if .babelrc was found, an empty config object must be passed in order for .babelrc config to be read automatically
