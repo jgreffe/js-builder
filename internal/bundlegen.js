@@ -237,8 +237,10 @@ exports.doJSBundle = function(bundle, applyImports) {
             babelConfig.plugins = plugins;
         }
 
+        var babelifyConfig = packageJson.babelify || {};
+
         // if .babelrc was found, an empty config object must be passed in order for .babelrc config to be read automatically
-        bundler.transform(babelify, babelConfig);
+        bundler.transform(babelify.configure(babelifyConfig), babelConfig);
     }
 
     if (bundle.bundleTransforms) {
