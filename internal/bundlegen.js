@@ -201,7 +201,7 @@ exports.doJSBundle = function(bundle, applyImports) {
         browserifyConfig.debug = true;
     }
 
-    logger.logInfo('using browserify config = \n' + JSON.stringify(browserifyConfig, null, '\t'));
+    logger.logInfo('using browserify config = \n' + JSON.stringify(browserifyConfig, null, '  '));
 
     var bundler = browserify(browserifyConfig);
 
@@ -238,7 +238,10 @@ exports.doJSBundle = function(bundle, applyImports) {
         }
 
         var babelifyConfig = packageJson.babelify || {};
-
+        
+        if(babelifyConfig !== {}) {
+            logger.logInfo('using babelify config = \n' + JSON.stringify(babelifyConfig, null, '  '));
+        }
         // if .babelrc was found, an empty config object must be passed in order for .babelrc config to be read automatically
         bundler.transform(babelify.configure(babelifyConfig), babelConfig);
     }
