@@ -187,15 +187,22 @@ exports.doJSBundle = function(bundle, applyImports) {
 
     var browserifyConfig = {
         entries: [fileToBundle],
-        extensions: ['.js', '.es6', '.jsx', '.hbs', '.ts', '.tsx'],
+        extensions: ['.js', '.es6', '.jsx', '.hbs'],
         cache: {},
         packageCache: {},
         fullPaths: true
     };
+
+    if(packageJson.browserify) {
+        browserifyConfig = Object.assign({}, browserifyConfig, packageJson.browserify);
+    }
     
     if (bundle.minifyBundle === true) {
         browserifyConfig.debug = true;
     }
+
+    logger.logInfo('using browserify config = \n' + JSON.stringify(browserifyConfig, null, '\t'));
+
     var bundler = browserify(browserifyConfig);
 
     var hasJSX = paths.hasSourceFiles('jsx');
@@ -204,7 +211,7 @@ exports.doJSBundle = function(bundle, applyImports) {
 
     if (langConfig.ecmaVersion === 6 || hasJSX || hasES6 || hasBabelRc) {
         var babelify = require('babelify');
-        var tsify = require('tsify');
+        
         var presets = [];
         var plugins = [];
 
@@ -231,7 +238,7 @@ exports.doJSBundle = function(bundle, applyImports) {
         }
 
         // if .babelrc was found, an empty config object must be passed in order for .babelrc config to be read automatically
-        bundler.plugin(tsify, { target: 'es6' }).transform(babelify, babelConfig);
+        bundler.transform(babelify, babelConfig);
     }
 
     if (bundle.bundleTransforms) {

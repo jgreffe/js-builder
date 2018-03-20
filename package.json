@@ -58,8 +58,6 @@
     "node-notifier": "^4.5.0",
     "through2": "^2.0.1",
     "transform": "^1.1.2",
-    "tsify": "^3.0.4",
-    "typescript": "^2.7.2",
     "underscore.string": "3.3.4",
     "vinyl-source-stream": "^1.1.0",
     "xml2js": "^0.4.9"
