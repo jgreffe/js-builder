@@ -623,8 +623,8 @@ function toModuleMapping(from, to, config) {
     }
 
     // special case because we are externalizing handlebars runtime for handlebarsify.
-    if (from === 'handlebars' && to === 'handlebars:handlebars3' && !config.require) {
-        config.require = 'jenkins-handlebars-rt/runtimes/handlebars3_rt';
+    if (from === 'handlebars' && to === 'handlebars:handlebars4' && !config.require) {
+        config.require = 'jenkins-handlebars-rt/runtimes/handlebars4_rt';
     }
 
     return {
